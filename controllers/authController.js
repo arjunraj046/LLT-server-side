@@ -4,8 +4,8 @@ const { passwordComparing } = require("../services/hasinging");
 
 const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = await clientLoginDB(username);
+    const { userName, password } = req.body;
+    const user = await clientLoginDB(userName);
     const isPasswordValid = await passwordComparing(user.password, password);
     if (!user || !isPasswordValid) {
       return res.status(401).json({ error: "Invalid credentials" });
@@ -18,8 +18,7 @@ const login = async (req, res) => {
       // token generate for agent
       token = generateToken(user._id);
     }
-
-    res.status(200).json({ token, user });
+    res.status(200).json({ status: "success", token, user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

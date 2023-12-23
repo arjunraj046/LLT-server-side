@@ -1,8 +1,8 @@
 const User = require("../models/User");
 
-const clientLoginDB = async (username) => {
+const clientLoginDB = async (userName) => {
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ userName });
     if (!user) return null;
     return user;
   } catch (error) {

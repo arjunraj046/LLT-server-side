@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const UserData = require("../models/UserData");
+const RangeSchema = require("../models/RangeSchema");
 
 const agentRegisterDB = async (name, userName, contactNumber, email, hashedPassword) => {
   try {
@@ -75,4 +76,27 @@ const listEntityDB = async () => {
   }
 };
 
-module.exports = { agentRegisterDB, listAgentsDB, agentProfileEditDB, changeAgentStatusDB, listEntityDB };
+const rangeSetupDB = async (startRange, endRange, color) => {
+  try {
+    const newRange = new RangeModel({
+      startRange,
+      endRange,
+      color,
+    });
+    const savedRange = await newRange.save();
+    return savedRange;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const rangeListDB = async () => {
+  try {
+    const ranges = await RangeModel.find();
+    return ranges;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { agentRegisterDB, listAgentsDB, agentProfileEditDB, changeAgentStatusDB, listEntityDB, rangeSetupDB, rangeListDB };
