@@ -26,8 +26,8 @@ const listAgentsDB = async (filter, pageNumber) => {
       filterCondition = { status: false };
     }
 
-    const users =
-      filter === "all"
+    const users = 
+    filter === "all"
         ? await User.find({ userRole: 2 }).limit(perPage).skip(skip)
         : await User.find({ ...filterCondition, userRole: 2 })
             .limit(perPage)
@@ -68,7 +68,9 @@ const changeAgentStatusDB = async (id) => {
 
 const listEntityDB = async () => {
   try {
+    
     const list = await UserData.find();
+
     if (!list) return null;
     return list;
   } catch (error) {
@@ -78,7 +80,7 @@ const listEntityDB = async () => {
 
 const rangeSetupDB = async (startRange, endRange, color) => {
   try {
-    const newRange = new RangeModel({
+    const newRange = new RangeSchema({
       startRange,
       endRange,
       color,
@@ -92,7 +94,7 @@ const rangeSetupDB = async (startRange, endRange, color) => {
 
 const rangeListDB = async () => {
   try {
-    const ranges = await RangeModel.find();
+    const ranges = await RangeSchema.find();
     return ranges;
   } catch (error) {
     throw error;

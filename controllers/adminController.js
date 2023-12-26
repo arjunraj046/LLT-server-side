@@ -75,9 +75,12 @@ const rangeSetup = async (req, res) => {
 
 const rangeList = async (req, res) => {
   try {
+    console.log("Rang list");
     const rangeList = await rangeListDB();
+    console.log(rangeList);
     res.status(200).json({ status: "success", rangeList });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
