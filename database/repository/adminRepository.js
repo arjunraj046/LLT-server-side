@@ -26,8 +26,8 @@ const listAgentsDB = async (filter, pageNumber) => {
       filterCondition = { status: false };
     }
 
-    const users = 
-    filter === "all"
+    const users =
+      filter === "all"
         ? await User.find({ userRole: 2 }).limit(perPage).skip(skip)
         : await User.find({ ...filterCondition, userRole: 2 })
             .limit(perPage)
@@ -68,8 +68,36 @@ const changeAgentStatusDB = async (id) => {
 
 const listEntityDB = async () => {
   try {
-    
-    const list = await UserData.find();
+    const list = await UserData.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "data",
+        },
+      },
+      {
+        $unwind: {
+          path: "$data",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          tokenNumber: 1,
+          count: 1,
+          date: 1,
+          name: "$data.name",
+          userName: "$data.userName",
+          contactNumber: "$data.contactNumber",
+          email: "$data.email",
+          userRole: "$data.userRole",
+          status: "$data.status",
+        },
+      },
+    ]);
 
     if (!list) return null;
     return list;
