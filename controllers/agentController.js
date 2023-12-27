@@ -34,7 +34,7 @@ const addEntity = async (req, res) => {
 
 const listEntity = async (req, res) => {
   try {
-    console.log(req.body);
+    console.log("agent",req.body);
     const { _id } = req.body;
     const listEntity = await getAgentEntity(_id);
 

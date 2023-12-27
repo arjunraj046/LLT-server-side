@@ -45,6 +45,7 @@ const addagentDataDB = async (id, date, tokenNumber, count) => {
 const getAgentEntity = async (id) => {
   try {
     const user = await UserData.find({ userId: ObjectId(id) });
+    console.log(user);
     if (!user) return null;
     return user;
   } catch (error) {
