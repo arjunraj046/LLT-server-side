@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const UserData = require("../models/UserData");
 const RangeSchema = require("../models/RangeSchema");
+const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 
 const agentRegisterDB = async (name, userName, contactNumber, email, hashedPassword) => {
   try {
@@ -15,11 +17,10 @@ const agentRegisterDB = async (name, userName, contactNumber, email, hashedPassw
 
 const listAgentsDB = async (filter, pageNumber) => {
   try {
-    const perPage = 5;
-    const skip = (pageNumber - 1) * perPage;
+    // const perPage = 5;
+    // const skip = (pageNumber - 1) * perPage;
 
     let filterCondition = {};
-
     if (filter === "active") {
       filterCondition = { status: true };
     } else if (filter === "inactive") {
@@ -28,10 +29,9 @@ const listAgentsDB = async (filter, pageNumber) => {
 
     const users =
       filter === "all"
-        ? await User.find({ userRole: 2 }).limit(perPage).skip(skip)
-        : await User.find({ ...filterCondition, userRole: 2 })
-            .limit(perPage)
-            .skip(skip);
+        ? await User.find({ userRole: 2 }) // .limit(perPage).skip(skip)
+        : await User.find({ ...filterCondition, userRole: 2 });
+    // .limit(perPage).skip(skip);
 
     return users;
   } catch (error) {
@@ -40,12 +40,26 @@ const listAgentsDB = async (filter, pageNumber) => {
   }
 };
 
-const agentProfileEditDB = async (id, updateUserinfo) => {
+const agentProfileEditDB = async (_id, name, userName, email, contactNumber) => {
   try {
-    const updatedAgent = await User.findByIdAndUpdate(id, updateUserinfo, { new: true });
+    const updateUserinfo = { name, userName, email, contactNumber };
+    const updatedAgent = await User.findByIdAndUpdate(_id, updateUserinfo, { new: true });
     return updatedAgent;
   } catch (error) {
     console.error("Error editing agent profile:", error);
+    throw error;
+  }
+};
+
+const agentPasswordChangeDB = async (_id, password) => {
+  try {
+    console.log("agentPasswordChangeDB");
+    const updateUserinfo = { password };
+    const Agent = await User.findByIdAndUpdate(_id, updateUserinfo, { new: true });
+    console.log("DB",Agent);
+    return Agent;
+  } catch (error) {
+    console.error("Error editing agent passoword:", error);
     throw error;
   }
 };
@@ -129,4 +143,15 @@ const rangeListDB = async () => {
   }
 };
 
-module.exports = { agentRegisterDB, listAgentsDB, agentProfileEditDB, changeAgentStatusDB, listEntityDB, rangeSetupDB, rangeListDB };
+const agentDataDB = async (id) => {
+  try {
+    let _id = new mongoose.Types.ObjectId(id);
+
+    const agent = await User.findOne(_id);
+    return agent;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { agentRegisterDB, listAgentsDB, agentProfileEditDB, changeAgentStatusDB, agentPasswordChangeDB, listEntityDB, rangeSetupDB, rangeListDB, agentDataDB };

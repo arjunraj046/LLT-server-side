@@ -1,5 +1,15 @@
-const { agentRegisterDB, listAgentsDB, agentProfileEditDB, changeAgentStatusDB, listEntityDB, rangeSetupDB, rangeListDB } = require("../database/repository/adminRepository");
-const { passwordHashing } = require("../services/hasinging");
+const {
+  agentRegisterDB,
+  listAgentsDB,
+  agentProfileEditDB,
+  agentPasswordChangeDB,
+  changeAgentStatusDB,
+  listEntityDB,
+  rangeSetupDB,
+  rangeListDB,
+  agentDataDB,
+} = require("../database/repository/adminRepository");
+const { passwordHashing, passwordComparing } = require("../services/hasinging");
 const { getAgent } = require("../database/repository/authRepository");
 
 const agentRegister = async (req, res) => {
@@ -26,19 +36,43 @@ const agentList = async (req, res) => {
 const agentDetails = async (req, res) => {
   try {
     const id = req.params;
-    const agentDetails = await getAgent(id);
+    console.log(id, "route is here ");
+    const agentDetails = await agentDataDB(id);
+    console.log(agentDetails);
     res.status(200).json({ status: "success", agentDetails });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const editAgent = async (req, res) => {
   try {
-    const id = req.params;
-    const updateUserinfo = req.body;
-    const updateUser = await agentProfileEditDB(id, updateUserinfo);
+    const { _id, name, userName, email, contactNumber } = req.body;
+
+    console.log(_id, name, userName, email, contactNumber);
+    const updateUser = await agentProfileEditDB(_id, name, userName, email, contactNumber);
     res.status(200).json({ status: "success", message: "Agent updated successfully", updateUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const editPasswordAgent = async (req, res) => {
+  try {
+    const { _id, previousPassword, password } = req.body;
+    // console.log(req.body);
+    const agentDetails = await agentDataDB(_id);
+    const pass = await passwordComparing(agentDetails.password, previousPassword);
+    if (pass) {
+      const hashPassword = await passwordHashing(password);
+      const data = await agentPasswordChangeDB(_id, hashPassword);
+      console.log(data);
+      console.log("success");
+      res.status(200).json({ status: "success", message: "Agent password change successfully", data });
+    } else {
+      return res.status(401).json({ error: "Password is incorrect!" });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -85,4 +119,4 @@ const rangeList = async (req, res) => {
   }
 };
 
-module.exports = { agentRegister, agentList, agentDetails, editAgent, agentStatusChange, listEntity, rangeSetup, rangeList };
+module.exports = { agentRegister, agentList, agentDetails, editAgent, agentStatusChange, listEntity, rangeSetup, rangeList, editPasswordAgent };

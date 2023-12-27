@@ -1,10 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
 // Assuming you have defined the UserData model somewhere before using it in addagentDataDB function
 // const UserData = mongoose.model('UserData');
 const UserData = require("../models/UserData");
-
 
 const addagentDataDB = async (id, date, tokenNumber, count) => {
   try {
@@ -22,7 +21,6 @@ const addagentDataDB = async (id, date, tokenNumber, count) => {
   }
 };
 
-
 // const UserData = require("../models/UserData");
 // // const { ObjectId } = require("mongoose").Types;
 
@@ -36,7 +34,7 @@ const addagentDataDB = async (id, date, tokenNumber, count) => {
 //       count: count,
 //       date: date,
 //     });
-    
+
 //     const savedUserData = await userData.save();
 //     return savedUserData;
 //   } catch (error) {
@@ -46,7 +44,7 @@ const addagentDataDB = async (id, date, tokenNumber, count) => {
 
 const getAgentEntity = async (id) => {
   try {
-    const user = await UserData.find({ _id: id });
+    const user = await UserData.find({ userId: ObjectId(id) });
     if (!user) return null;
     return user;
   } catch (error) {
