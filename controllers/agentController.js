@@ -32,6 +32,15 @@ const addEntity = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+
 const listEntity = async (req, res) => {
   try {
     console.log("agent",req.body);
@@ -43,5 +52,13 @@ const listEntity = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+
+
+
+
+
 
 module.exports = { addEntity, listEntity };

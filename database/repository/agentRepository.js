@@ -42,14 +42,36 @@ const addagentDataDB = async (id, date, tokenNumber, count) => {
 //   }
 // };
 
+// const getAgentEntity = async (id) => {
+//   try {
+//     console.log("getAgentEntity in db ", id);
+//     let _id = new mongoose.Types.ObjectId(id);
+//     console.log(_id);
+//     const list = await UserData.find({ userId: _id });
+//     console.log(list);
+//     if (!list) return null;
+//     return list;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 const getAgentEntity = async (id) => {
   try {
-    const user = await UserData.find({ userId: ObjectId(id) });
-    console.log(user);
-    if (!user) return null;
-    return user;
+    console.log("getAgentEntity in db ", id);
+    const _id = new mongoose.Types.ObjectId(id);
+    console.log(_id);
+
+    const list = await UserData.find({ userId: _id });
+
+    if (!list || list.length === 0) {
+      return null;
+    }
+
+    console.log(list);
+    return list;
   } catch (error) {
-    throw error;
+    console.error("Error fetching agent entities:", error);
+    throw error; // Re-throw the error to be handled by the caller
   }
 };
 
